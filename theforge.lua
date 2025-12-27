@@ -1,18 +1,6 @@
-local HttpService = game:GetService("HttpService")
-local API_URL = "https://w4-team.vercel.app/api/theforge"
 
-
-local function sendToAPI(data)
-    local success, result = pcall(function()
-        return HttpService:PostAsync(
-            API_URL,
-            HttpService:JSONEncode(data),
-            Enum.HttpContentType.ApplicationJson,
-            false
-        )
-    end)
-
-    if not success then
-        warn("HTTP Error:", result)
-    end
-end
+getgenv().W4_Settings = {
+    ['KEY'] = 'id user',
+    ['PC'] = "ChangePCName"
+}
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NutxV2/Lua-Scripts/refs/heads/main/%5B%20W4%20%5D%20The%20Froge"))()

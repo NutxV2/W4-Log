@@ -1,22 +1,32 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Settings, Copy, Check } from "lucide-react"
-import { DynamicDialog } from "@/components/Bulid Ui/dialog"
-
+import { useEffect, useState } from "react";
+import { Settings, Copy, Check } from "lucide-react";
+import { DynamicDialog } from "@/components/Bulid Ui/dialog";
+import useW4Store from "@/store/w4Store";
 export function SettingButton() {
-  const [open, setOpen] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const getUsers = useW4Store((state) => state.getUsers);
+  const user = useW4Store((state) => state.user);
 
-  const textToCopy = `API_URL=https://api.example.com
-TOKEN=YOUR_TOKEN_HERE
-MODE=production`
+  useEffect(() => {
+    getUsers();
+  }, [getUsers]);
+
+
+  const textToCopy = `getgenv().W4_Settings = {
+    ['KEY'] = '${user?.id ?? ""}',
+    ['PC'] = "ChangePCName"
+}
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NutxV2/Lua-Scripts/refs/heads/main/%5B%20W4%20%5D%20The%20Froge"))()`;
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(textToCopy)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
-  }
+    await navigator.clipboard.writeText(textToCopy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   return (
     <>
@@ -51,9 +61,8 @@ MODE=production`
         <div className="space-y-3">
           {/* กล่องข้อความที่ copy ได้ */}
           <div className="relative bg-black rounded-lg ">
-            <pre 
-            className="text-sm bg-white/5  text-white border-white/10 rounded-lg p-3 select-text">
-            {textToCopy}
+            <pre className="text-sm bg-white/5 text-white border-white/10 rounded-lg p-3 select-text whitespace-pre-wrap break-all">
+              {textToCopy}
             </pre>
 
             <button
@@ -72,5 +81,5 @@ MODE=production`
         </div>
       </DynamicDialog>
     </>
-  )
+  );
 }
