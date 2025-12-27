@@ -11,7 +11,23 @@ const TheForge = () => {
   const getData = async () => {
     try {
       const res = await axios.get("/api/theforge");
-      setData(res.data.data);
+
+      // เอาเฉพาะข้อมูลล่าสุดต่อ username
+      const latest = Object.values(
+        res.data.data.reduce((acc: any, item: any) => {
+          const name = item.name || item.username;
+          if (!acc[name] || (item.timestamp ?? 0) > (acc[name].timestamp ?? 0)) {
+            acc[name] = {
+              ...item,
+              name,
+              status: item.status?.toUpperCase(),
+            };
+          }
+          return acc;
+        }, {})
+      );
+
+      setData(latest as any[]);
     } catch (error) {
       console.error("Error fetching The Forge data:", error);
     }
@@ -19,6 +35,8 @@ const TheForge = () => {
 
   useEffect(() => {
     getData();
+    const interval = setInterval(getData, 3000); // refresh ทุก 3 วิ
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -41,15 +59,15 @@ const TheForge = () => {
 
           <tbody>
             {data.length > 0 ? (
-              data.map((row, index) => (
+              data.map((row) => (
                 <tr
-                  key={row.id || index}
+                  key={`${row.name}-${row.timestamp}`}
                   className="bg-black hover:bg-white/5 transition"
                 >
                   <td className="px-3 py-2 text-sm text-center border-b border-white/5">
                     <span
                       className={
-                        row.status === "Online"
+                        row.status === "ONLINE"
                           ? "text-green-400 bg-green-400/20 rounded-xl px-3 py-1"
                           : "text-red-400 bg-red-400/20 rounded-xl px-3 py-1"
                       }
@@ -59,7 +77,7 @@ const TheForge = () => {
                   </td>
 
                   <td className="px-3 py-2 text-sm text-white/70 text-center border-b border-white/5">
-                    {row.pc}
+                    {row.pc || "-"}
                   </td>
 
                   <td className="px-3 py-2 text-sm text-white/70 text-center border-b border-white/5">
@@ -75,7 +93,7 @@ const TheForge = () => {
                   </td>
 
                   <td className="px-3 py-2 text-sm text-white/70 text-center border-b border-white/5">
-                    ${Number(row.money).toLocaleString()}
+                    ${Number(row.gold).toLocaleString()}
                   </td>
 
                   <td className="px-3 py-2 text-sm text-white/70 text-center border-b border-white/5">

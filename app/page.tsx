@@ -12,7 +12,7 @@ export default function Home() {
 
         <div className="space-y-4">
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50">
-            Monitor System
+            W4 Monitor System
           </h1>
 
           <p className="text-lg text-white/60 max-w-lg mx-auto leading-relaxed">
